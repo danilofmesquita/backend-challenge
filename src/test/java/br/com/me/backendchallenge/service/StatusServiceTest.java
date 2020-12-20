@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-class PedidoServiceTest {
+class StatusServiceTest {
     @Mock
     PedidoRepository pedidoRepository;
 
     @InjectMocks
-    PedidoService pedidoService;
+    StatusService statusService;
 
     @Test
     void deveRetornarStatusCodigoPedidoInvalido() {
@@ -35,7 +35,7 @@ class PedidoServiceTest {
         statusAlterarDTO.setItensAprovados(1L);
         statusAlterarDTO.setValorAprovado(BigDecimal.ONE);
 
-        final var statusAlterado = pedidoService.alterarStatus(statusAlterarDTO);
+        final var statusAlterado = statusService.alterarStatus(statusAlterarDTO);
 
         Assertions.assertThat(statusAlterado.getStatus())
                 .hasSize(1)
