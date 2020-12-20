@@ -20,7 +20,7 @@ public class PedidoController {
     private final PedidoService pedidoService;
 
     @GetMapping
-    public List<Pedido> get() {
+    public List<Pedido> getAll() {
         return this.pedidoService.findAll();
     }
 
@@ -45,5 +45,10 @@ public class PedidoController {
     @PutMapping("/{id}")
     public void update(@PathVariable("id") String id, @RequestBody PedidoDTO pedido) {
         this.pedidoService.update(id, pedido);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") String id) {
+        this.pedidoService.deleteById(id);
     }
 }
