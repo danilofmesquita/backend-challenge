@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-class PedidoServiceTest {
+class StatusServiceTest {
     @Mock
     PedidoRepository pedidoRepository;
 
     @InjectMocks
-    PedidoService pedidoService;
+    StatusService statusService;
 
     @Test
     void deveRetornarStatusCodigoPedidoInvalido() {
@@ -35,25 +35,10 @@ class PedidoServiceTest {
         statusAlterarDTO.setItensAprovados(1L);
         statusAlterarDTO.setValorAprovado(BigDecimal.ONE);
 
-        final var statusAlterado = pedidoService.alterarStatus(statusAlterarDTO);
+        final var statusAlterado = statusService.alterarStatus(statusAlterarDTO);
 
         Assertions.assertThat(statusAlterado.getStatus())
                 .hasSize(1)
                 .contains(Status.CODIGO_PEDIDO_INVALIDO);
-    }
-
-    @Test
-    void deveDelegarAlteracaoStatusParaEntidade() {
-        var pedido = Mockito.mock(Pedido.class);
-        Mockito.when(pedidoRepository.findById(Mockito.any())).thenReturn(Optional.of(pedido));
-        Mockito.when(pedido.alterarStatus(Mockito.any())).thenReturn(List.of(Status.APROVADO_VALOR_A_MAIOR,
-                Status.APROVADO_QTD_A_MENOR));
-
-        final var statusAlterado = pedidoService.alterarStatus(new StatusAlterarDTO());
-
-        Assertions.assertThat(statusAlterado.getStatus())
-                .hasSize(2)
-                .contains(Status.APROVADO_VALOR_A_MAIOR,
-                        Status.APROVADO_QTD_A_MENOR);
     }
 }

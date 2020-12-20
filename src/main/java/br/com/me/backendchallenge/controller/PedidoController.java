@@ -5,6 +5,7 @@ import br.com.me.backendchallenge.dto.PedidoDTO;
 import br.com.me.backendchallenge.service.PedidoService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -14,15 +15,12 @@ import java.util.List;
 @Tag(name = "Pedido")
 @RestController
 @RequestMapping("/pedidos")
+@AllArgsConstructor
 public class PedidoController {
     private final PedidoService pedidoService;
 
-    public PedidoController(PedidoService pedidoService) {
-        this.pedidoService = pedidoService;
-    }
-
     @GetMapping
-    public List<Pedido> get() {
+    public List<Pedido> getAll() {
         return this.pedidoService.findAll();
     }
 
@@ -49,4 +47,8 @@ public class PedidoController {
         this.pedidoService.update(id, pedido);
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") String id) {
+        this.pedidoService.deleteById(id);
+    }
 }

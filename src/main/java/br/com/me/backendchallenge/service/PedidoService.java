@@ -3,11 +3,9 @@ package br.com.me.backendchallenge.service;
 import br.com.me.backendchallenge.domain.Pedido;
 import br.com.me.backendchallenge.dto.ItemDTO;
 import br.com.me.backendchallenge.dto.PedidoDTO;
-import br.com.me.backendchallenge.dto.StatusAlteradoDTO;
-import br.com.me.backendchallenge.dto.StatusAlterarDTO;
-import br.com.me.backendchallenge.enums.Status;
 import br.com.me.backendchallenge.repository.ItemRepository;
 import br.com.me.backendchallenge.repository.PedidoRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -16,27 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final ItemRepository itemRepository;
-
-    public PedidoService(PedidoRepository pedidoRepository, ItemRepository itemRepository) {
-        this.pedidoRepository = pedidoRepository;
-        this.itemRepository = itemRepository;
-    }
-
-    public StatusAlteradoDTO alterarStatus(StatusAlterarDTO novoStatus) {
-        final var pedidoOpt = this.pedidoRepository.findById(novoStatus.getPedido());
-        final List<Status> status;
-        if (pedidoOpt.isPresent()) {
-            final var pedido = pedidoOpt.get();
-            status = pedido.alterarStatus(novoStatus);
-            this.pedidoRepository.save(pedido);
-        } else {
-            status = List.of(Status.CODIGO_PEDIDO_INVALIDO);
-        }
-        return new StatusAlteradoDTO(novoStatus.getPedido(), status);
-    }
 
     public String add(PedidoDTO dto) {
         var pedido = new Pedido();
@@ -67,7 +48,6 @@ public class PedidoService {
                     }
                 }
                 pedido.addItem(item);
-
             }
             pedidoRepository.save(pedido);
         } else {

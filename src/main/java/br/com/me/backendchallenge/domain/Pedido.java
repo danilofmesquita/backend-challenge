@@ -2,7 +2,6 @@ package br.com.me.backendchallenge.domain;
 
 import br.com.me.backendchallenge.dto.ItemDTO;
 import br.com.me.backendchallenge.dto.StatusAlterarDTO;
-import br.com.me.backendchallenge.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -14,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter
@@ -45,15 +43,13 @@ public class Pedido {
     @JsonIgnore
     private Date criadoEm;
 
-    public List<Status> alterarStatus(StatusAlterarDTO dto) {
+    public void alterarStatus(StatusAlterarDTO dto) {
         var status = novoStatus(dto);
-        var statusRetorno = this.comparar(dto);
         if (this.statusAtual != null) {
             this.statusAtual.finalizar();
         }
         this.statusAtual = status;
         this.statusList.add(status);
-        return statusRetorno;
     }
 
     private StatusPedido novoStatus(StatusAlterarDTO novoStatus) {
@@ -64,39 +60,6 @@ public class Pedido {
         status.setCriadoEm(new Date());
         status.setStatus(novoStatus.getStatus());
         return status;
-    }
-
-    private List<Status> comparar(StatusAlterarDTO novoStatus) {
-        var retorno = new ArrayList<Status>();
-        if (Status.REPROVADO == novoStatus.getStatus()) {
-            return List.of(Status.REPROVADO);
-        }
-        testValorAprovado(novoStatus.getValorAprovado()).ifPresent(retorno::add);
-        testQtdAprovada(novoStatus.getItensAprovados()).ifPresent(retorno::add);
-        if (retorno.isEmpty()) {
-            return List.of(Status.APROVADO);
-        }
-        return retorno;
-    }
-
-    private Optional<Status> testQtdAprovada(Long novoQtdItensAprovados) {
-        int comparacao = novoQtdItensAprovados.compareTo(this.getQtdTotalItens());
-        if (comparacao > 0) {
-            return Optional.of(Status.APROVADO_QTD_A_MAIOR);
-        } else if (comparacao < 0) {
-            return Optional.of(Status.APROVADO_QTD_A_MENOR);
-        }
-        return Optional.empty();
-    }
-
-    private Optional<Status> testValorAprovado(BigDecimal novoValorAprovado) {
-        int comparacao = novoValorAprovado.compareTo(this.getValorTotal());
-        if (comparacao > 0) {
-            return Optional.of(Status.APROVADO_VALOR_A_MAIOR);
-        } else if (comparacao < 0) {
-            return Optional.of(Status.APROVADO_VALOR_A_MENOR);
-        }
-        return Optional.empty();
     }
 
     @JsonIgnore
