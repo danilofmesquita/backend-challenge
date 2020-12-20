@@ -41,19 +41,4 @@ class PedidoServiceTest {
                 .hasSize(1)
                 .contains(Status.CODIGO_PEDIDO_INVALIDO);
     }
-
-    @Test
-    void deveDelegarAlteracaoStatusParaEntidade() {
-        var pedido = Mockito.mock(Pedido.class);
-        Mockito.when(pedidoRepository.findById(Mockito.any())).thenReturn(Optional.of(pedido));
-        Mockito.when(pedido.alterarStatus(Mockito.any())).thenReturn(List.of(Status.APROVADO_VALOR_A_MAIOR,
-                Status.APROVADO_QTD_A_MENOR));
-
-        final var statusAlterado = pedidoService.alterarStatus(new StatusAlterarDTO());
-
-        Assertions.assertThat(statusAlterado.getStatus())
-                .hasSize(2)
-                .contains(Status.APROVADO_VALOR_A_MAIOR,
-                        Status.APROVADO_QTD_A_MENOR);
-    }
 }

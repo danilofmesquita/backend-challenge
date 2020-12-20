@@ -74,7 +74,7 @@ class PedidoIntegrationTest {
                 .contentType("application/json")
                 .content("{\"status\":\"APROVADO\",\"itensAprovados\":4,\"valorAprovado\":22,\"pedido\":\"" + pedidoId + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", Matchers.contains(Status.APROVADO_VALOR_A_MAIOR.name(),
+                .andExpect(jsonPath("$.status", Matchers.containsInAnyOrder(Status.APROVADO_VALOR_A_MAIOR.name(),
                         Status.APROVADO_QTD_A_MAIOR.name())));
     }
 
